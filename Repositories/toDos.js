@@ -1,5 +1,4 @@
 const { readFile, writeFile } = require('fs/promises');
-var url = require('url');
 
 async function getToDos() {
   let data = await readFile('todos.json');
@@ -50,7 +49,7 @@ async function deleteToDo(req, res) {
 }
 
 async function changeToDoStatus(req, res) {
-  let a =  req.url.split('/')
+  let a = req.url.split('/');
   var body = '';
   req.on('data', function (data) {
     body += data;
