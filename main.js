@@ -50,11 +50,11 @@ let app = http.createServer(async function (req, res) {
         res.end();
       }
     }
-  } else if (req.url == '/todos/status' && req.method == 'PATCH') {
+  } else if (req.url.includes('/todos/status') && req.method == 'PATCH') {
     try {
       await changeToDoStatus(req, res);
-      res.write('status updated successfully');
       res.writeHead(200);
+      res.write('status updated successfully');
       res.end();
     } catch (error) {
       res.write('400');

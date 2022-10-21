@@ -1,4 +1,5 @@
 const { readFile, writeFile } = require('fs/promises');
+var url = require('url');
 
 async function getToDos() {
   let data = await readFile('todos.json');
@@ -49,6 +50,7 @@ async function deleteToDo(req, res) {
 }
 
 async function changeToDoStatus(req, res) {
+  let a =  req.url.split('/')
   var body = '';
   req.on('data', function (data) {
     body += data;
@@ -58,8 +60,7 @@ async function changeToDoStatus(req, res) {
   });
   let data = await readFile('todos.json');
   data = JSON.parse(data.toString());
-  data.find((d) => JSON.parse(body).id == d.id).status =
-    JSON.parse(body).status;
+  data.find((d) => a[3] == d.id).status = a[4];
 
   await writeFile('todos.json', JSON.stringify(data));
 }
