@@ -51,7 +51,3 @@ async function verify(req) {
   }
 }
 module.exports = { loginUser, verify };
-
-// Create login route and authenticate user. you can use jsonwebtoken to authorize user. + test
-
-// Add new route is assignTo which assigns tasks to particular user.

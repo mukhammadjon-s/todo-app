@@ -7,6 +7,10 @@ const {
   changeToDoStatus,
 } = require('./Repositories/toDos.js');
 
+const { getAssigns, 
+        postAssign
+      } = require('./Repositories/assigns.js')
+
 const { loginUser, verify } = require('./Repositories/auth.js');
 
 let app = http.createServer(async function (req, res) {
@@ -26,7 +30,7 @@ let app = http.createServer(async function (req, res) {
   } else if (req.url == '/todos') {
     
     if (req.method == 'GET') {
-      console.log(req.rawHeaders[1]);
+
       if(await verify(req) == true){
         res.writeHead(200, { 'Content-Type': 'text/html' });
         res.write(await getToDos(req, res));
@@ -106,7 +110,35 @@ let app = http.createServer(async function (req, res) {
       res.write('401 unauthorized');
     }
     
-  } else {
+  }
+  else if (req.url == '/todos/assignTo'){
+    if (req.method == 'GET') {
+      if ((await verify(req)) == true) {
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.write(await getAssigns(req, res));
+        res.end();
+      } else {
+        res.writeHead(401);
+        res.write('401 unauthorized');
+      }
+    } else if (req.method == 'POST') {
+      if ((await verify(req, res)) == true) {
+        try {
+          await postAssign(req, res);
+          res.write('assigned successfully');
+          res.end();
+        } catch (error) {
+          res.write('400');
+          console.log(error);
+        }
+      } else {
+        res.writeHead(401);
+        res.write('401 unauthorized');
+      }
+    }
+  } 
+  
+  else {
     res.write('404');
   }
   res.end();
