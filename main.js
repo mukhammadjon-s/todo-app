@@ -146,4 +146,6 @@ let app = http.createServer(async function (req, res) {
 
 module.exports = app;
 
-app.listen(8080);
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(port, () => console.log(`Listening on port ${port}`))
+}
