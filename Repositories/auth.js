@@ -10,7 +10,7 @@ async function loginUser(req, res) {
   req.on('end', function () {
     res.writeHead(201, { 'Content-Type': 'text/html' });
   });
-  let data = await readFile('users.json');
+  let data = await readFile('./DB/users.json');
   data = JSON.parse(data.toString());
 
   let foundUser = data.find(
@@ -34,7 +34,7 @@ async function verify(req) {
   try {
     let body = jwt.verify(req.rawHeaders[1], process.env.TOKEN_KEY);
 
-    let data = await readFile('users.json');
+    let data = await readFile('./DB/users.json');
     data = JSON.parse(data.toString());
     let foundUser = data.find(
       (dt) => dt.user_name == body.user_name && dt.user_pass == body.user_pass
