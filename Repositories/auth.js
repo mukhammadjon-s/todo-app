@@ -32,8 +32,15 @@ async function loginUser(req, res) {
 
 async function verify(req) {
   try {
-    let body = jwt.verify(req.rawHeaders[1], process.env.TOKEN_KEY);
-
+    let header = ''
+    if(process.env.NODE_ENV=='test'){
+       header = req.rawHeaders[5];
+    }
+    else {
+       header = req.rawHeaders[1]
+    }
+    let body = jwt.verify(header, process.env.TOKEN_KEY); 
+    
     let data = await readFile('./DB/users.json');
     data = JSON.parse(data.toString());
     let foundUser = data.find(

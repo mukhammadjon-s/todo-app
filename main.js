@@ -30,7 +30,6 @@ let app = http.createServer(async function (req, res) {
   } else if (req.url == '/todos') {
     
     if (req.method == 'GET') {
-
       if(await verify(req) == true){
         res.writeHead(200, { 'Content-Type': 'text/html' });
         res.write(await getToDos(req, res));
@@ -113,6 +112,7 @@ let app = http.createServer(async function (req, res) {
   }
   else if (req.url == '/todos/assignTo'){
     if (req.method == 'GET') {
+        // console.log(jwt.verify(req.rawHeaders[5], process.env.TOKEN_KEY));
       if ((await verify(req)) == true) {
         res.writeHead(200, { 'Content-Type': 'text/html' });
         res.write(await getAssigns(req, res));
@@ -147,5 +147,7 @@ let app = http.createServer(async function (req, res) {
 module.exports = app;
 
 if (process.env.NODE_ENV !== 'test') {
-  app.listen(port, () => console.log(`Listening on port ${port}`))
+  app.listen(process.env.PORT, () =>
+    console.log(`Listening on port ${process.env.PORT}`)
+  );
 }

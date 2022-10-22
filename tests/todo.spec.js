@@ -42,7 +42,7 @@ describe('Test DELETE /todos', () => {
   test('it should respond with 200 deleted', async () => {
     response = await request(app)
       .delete('/todos')
-      .set('Authorization', { token: process.env.rawToken })
+      .set({ token: process.env.rawToken })
       .send({
         id: 8,
       })
@@ -50,11 +50,11 @@ describe('Test DELETE /todos', () => {
   });
 });
 
-describe('Test PATCH Status /todos', () => {
+describe('Test PATCH Status /todos/status', () => {
   test('it should respond with 200 patched status', async () => {
     response = await request(app)
       .patch('/todos/status/3/DOING')
-      .set('Authorization', { token: process.env.rawToken })
+      .set({ token: process.env.rawToken })
       .expect(200);
   });
 });
