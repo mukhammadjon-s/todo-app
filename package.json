@@ -1,0 +1,38 @@
+{
+  "name": "todo-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "start": "node main.js",
+    "test": "jest",
+    "lint:fix": "eslint --fix ./*.js",
+    "precommit": "npm run lint:fix && npm test",
+    "prepush": "npm run lint",
+    "prepare": "husky install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mukhammadjon-s/todo-app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mukhammadjon-s/todo-app/issues"
+  },
+  "homepage": "https://github.com/mukhammadjon-s/todo-app#readme",
+  "devDependencies": {
+    "eslint": "^8.26.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.3.0",
+    "eslint-plugin-promise": "^6.1.1",
+    "husky": "^8.0.0",
+    "jest": "^29.2.1",
+    "supertest": "^6.3.0"
+  }
+}
