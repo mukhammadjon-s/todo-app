@@ -34,12 +34,13 @@ let app = http.createServer(async function (req, res) {
       }
     } else if (req.method == 'PUT') {
       try {
+        let url = req.url.split('/');
         var body = '';
-        req.on('data', function (data) {
+        req.on('data', function (data, url) {
           body += data;
         });
         console.log(await body);
-        await updateToDo(body);
+        await updateToDo(body, url);
         
         res.writeHead(200, { 'Content-Type': 'text/html' });
         res.write('updated successfully');
@@ -51,12 +52,8 @@ let app = http.createServer(async function (req, res) {
       }
     } else if (req.method == 'DELETE') {
       try {
-        var body = '';
-        req.on('data', function (data) {
-          body += data;
-        });
-        console.log(await body);
-        await deleteToDo(body);
+        let url = req.url.split('/');
+        await deleteToDo(url);
         
         res.writeHead(200, { 'Content-Type': 'text/html' });
         res.write('deleted successfully');

@@ -20,34 +20,30 @@ describe('Test POST /todos', () => {
   });
 });
 
-describe('Test UPDATE /todos', () => {
+describe('Test UPDATE /todos/:id', () => {
   test('it should respond with 200 updated', async () => {
     response = await request(app)
-      .put('/todos')
+      .put('/todos/3')
       .send({
-        id: 8,
-        text: 'text8',
+        text: 'text33',
       })
       .expect(200);
   });
 });
-describe('Test DELETE /todos', () => {
+
+describe('Test DELETE /todos/:id', () => {
   test('it should respond with 200 deleted', async () => {
     response = await request(app)
-      .delete('/todos')
-      .send({
-        id: 8,
-      })
+      .delete('/todos/5')
       .expect(200);
   });
 });
-describe('Test PATCH Status /todos', () => {
+describe('Test PATCH Status /todos/status/:id', () => {
   test('it should respond with 200 patched status', async () => {
     response = await request(app)
-      .patch('/todos')
+      .patch('/todos/status/3')
       .send({
-        id: 8,
-        status: 'high',
+        status: 'DONE',
       })
       .expect(200);
   });

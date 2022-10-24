@@ -13,17 +13,17 @@ async function postToDo(body) {
   await writeFile('todos.json', JSON.stringify(data));
 }
 
-async function updateToDo(body) {
+async function updateToDo(body, url) {
   let data = await readFile('todos.json');
   data = JSON.parse(data.toString());
-  data.find((d) => JSON.parse(body).id == d.id).text = JSON.parse(body).text;
+  data.find((d) => url[2] == d.id).text = JSON.parse(body).text;
   await writeFile('todos.json', JSON.stringify(data));
 }
 
-async function deleteToDo(body) {
+async function deleteToDo(url) {
   let data = await readFile('todos.json');
   data = JSON.parse(data.toString());
-  data.find((d) => JSON.parse(body).id == d.id).deleted = true;
+  data.find((d) => url[2] == d.id).deleted = true;
   await writeFile('todos.json', JSON.stringify(data));
 }
 
