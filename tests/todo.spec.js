@@ -14,7 +14,7 @@ describe('Test POST /todos', () => {
       .send({
         id: 8,
         text: 'text8',
-        status: 'high',
+        status: 'DOING',
       })
       .expect(201);
   });
