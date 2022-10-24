@@ -15,12 +15,19 @@ let app = http.createServer(async function (req, res) {
   } else if (req.url == '/todos') {
     if (req.method == 'GET') {
       res.writeHead(200, { 'Content-Type': 'text/html' });
-      res.write(await getToDos(req, res));
+      res.write(await getToDos());
       res.end();
     } else if (req.method == 'POST') {
       try {
-        await postToDo(req, res);
+        var body = '';
+        req.on('data', function (data) {
+          body += data;
+        });
+        await postToDo(body);
         res.write('posted successfully');
+         req.on('end', function () {
+           res.writeHead(201, { 'Content-Type': 'text/html' });
+         });
         res.end();
       } catch (error) {
         res.write('400');
@@ -28,8 +35,14 @@ let app = http.createServer(async function (req, res) {
       }
     } else if (req.method == 'PUT') {
       try {
-        await updateToDo(req, res);
-        res.writeHead(200);
+        var body = '';
+        req.on('data', function (data) {
+          body += data;
+        });
+        await updateToDo(body);
+        req.on('end', function () {
+          res.writeHead(201, { 'Content-Type': 'text/html' });
+        });
         res.write('updated successfully');
 
         res.end();
@@ -39,8 +52,14 @@ let app = http.createServer(async function (req, res) {
       }
     } else if (req.method == 'DELETE') {
       try {
-        await deleteToDo(req, res);
-        res.writeHead(200);
+         var body = '';
+         req.on('data', function (data) {
+           body += data;
+         });
+        await deleteToDo(body);
+        req.on('end', function () {
+           res.writeHead(200, { 'Content-Type': 'text/html' });
+        });
         res.write('deleted successfully');
 
         res.end();
@@ -52,8 +71,11 @@ let app = http.createServer(async function (req, res) {
     }
   } else if (req.url.includes('/todos/status') && req.method == 'PATCH') {
     try {
-      await changeToDoStatus(req, res);
-      res.writeHead(200);
+       let url = req.url.split('/');
+      await changeToDoStatus(url);
+      req.on('end', function () {
+        res.writeHead(201, { 'Content-Type': 'text/html' });
+      });
       res.write('status updated successfully');
       res.end();
     } catch (error) {
