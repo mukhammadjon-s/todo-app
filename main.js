@@ -23,11 +23,10 @@ let app = http.createServer(async function (req, res) {
         req.on('data', function (data) {
           body += data;
         });
+        console.log(await body)
         await postToDo(body);
+        res.writeHead(201, { 'Content-Type': 'text/html' });
         res.write('posted successfully');
-         req.on('end', function () {
-           res.writeHead(201, { 'Content-Type': 'text/html' });
-         });
         res.end();
       } catch (error) {
         res.write('400');
@@ -39,12 +38,12 @@ let app = http.createServer(async function (req, res) {
         req.on('data', function (data) {
           body += data;
         });
+        console.log(await body);
         await updateToDo(body);
-        req.on('end', function () {
-          res.writeHead(201, { 'Content-Type': 'text/html' });
-        });
+        
+        res.writeHead(200, { 'Content-Type': 'text/html' });
         res.write('updated successfully');
-
+        
         res.end();
       } catch (error) {
         res.write('400');
@@ -52,16 +51,16 @@ let app = http.createServer(async function (req, res) {
       }
     } else if (req.method == 'DELETE') {
       try {
-         var body = '';
-         req.on('data', function (data) {
-           body += data;
-         });
-        await deleteToDo(body);
-        req.on('end', function () {
-           res.writeHead(200, { 'Content-Type': 'text/html' });
+        var body = '';
+        req.on('data', function (data) {
+          body += data;
         });
+        console.log(await body);
+        await deleteToDo(body);
+        
+        res.writeHead(200, { 'Content-Type': 'text/html' });
         res.write('deleted successfully');
-
+        
         res.end();
       } catch (error) {
         res.write('400');
@@ -71,11 +70,11 @@ let app = http.createServer(async function (req, res) {
     }
   } else if (req.url.includes('/todos/status') && req.method == 'PATCH') {
     try {
-       let url = req.url.split('/');
+      let url = req.url.split('/');
       await changeToDoStatus(url);
-      req.on('end', function () {
-        res.writeHead(201, { 'Content-Type': 'text/html' });
-      });
+      
+      res.writeHead(200, { 'Content-Type': 'text/html' });
+      
       res.write('status updated successfully');
       res.end();
     } catch (error) {
