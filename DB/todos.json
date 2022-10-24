@@ -1,0 +1,8 @@
+[
+  {"id":1,"text":"text1","status":"TODO","deleted":false},
+  {"id":2,"text":"text2","status":"DOING","deleted":false},
+  {"id":3,"text":"text33","status":"DOING","deleted":false},
+  {"id":4,"text":"text4","status":"TODO","deleted":true},
+  {"id":5,"text":"text5","status":"DOING","deleted":true},
+  {"id":8,"text":"text8","status":"DONE","deleted":true}
+]

@@ -6,78 +6,140 @@ const {
   updateToDo,
   deleteToDo,
   changeToDoStatus
-} = require('./repo.js')
+} = require('./Repositories/toDos.js')
+
+const { getAssigns, postAssign } = require('./Repositories/assigns.js')
+
+const { loginUser, verify } = require('./Repositories/auth.js')
 
 const app = http.createServer(async (req, res) => {
   if (req.url === '/') {
     res.writeHead(200, { 'Content-Type': 'text/html' })
     res.write('home')
+  } else if (req.url === '/login' && req.method === 'POST') {
+    try {
+      let body = ''
+      req.on('data', function (data) {
+        body += data
+      })
+      console.log(await body)
+      res.writeHead(200, { 'Content-Type': 'text/html' })
+      res.write(await loginUser(body))
+    } catch (error) {
+      res.writeHead(401)
+      res.write('401 unauthorized')
+      console.log(error)
+    }
   } else if (req.url === '/todos') {
     if (req.method === 'GET') {
-      res.writeHead(200, { 'Content-Type': 'text/html' })
-      res.write(await getToDos())
-      res.end()
+      if ((await verify(req.rawHeaders)) === true) {
+        res.writeHead(200, { 'Content-Type': 'text/html' })
+        res.write(await getToDos())
+      } else {
+        res.writeHead(401)
+        res.write('401 unauthorized')
+      }
     } else if (req.method === 'POST') {
-      try {
-        let body = ''
-        req.on('data', (data) => {
-          body += data
-        })
-        console.log(await body)
-        await postToDo(body)
-        res.writeHead(201, { 'Content-Type': 'text/html' })
-        res.write('posted successfully')
-        res.end()
-      } catch (error) {
-        res.write('400')
-        console.log(error)
-      }
-    } else if (req.method === 'PUT') {
-      try {
-        const url = req.url.split('/')
-        let body = ''
-        req.on('data', (data) => {
-          body += data
-        })
-        console.log(await body)
-        await updateToDo(body, url)
+      if ((await verify(req.rawHeaders)) === true) {
+        try {
+          req.on('data', (data) => {
+            postToDo(data)
+          })
+          res.writeHead(201, { 'Content-Type': 'text/html' })
 
-        res.writeHead(200, { 'Content-Type': 'text/html' })
-        res.write('updated successfully')
-
-        res.end()
-      } catch (error) {
-        res.write('400')
-        console.log(error)
-      }
-    } else if (req.method === 'DELETE') {
-      try {
-        const url = req.url.split('/')
-        await deleteToDo(url)
-
-        res.writeHead(200, { 'Content-Type': 'text/html' })
-        res.write('deleted successfully')
-
-        res.end()
-      } catch (error) {
-        res.write('400')
-        console.log(error)
-        res.end()
+          res.write('posted successfully')
+        } catch (error) {
+          res.write('400')
+          console.log(error)
+        }
+      } else {
+        res.writeHead(401)
+        res.write('401 unauthorized')
       }
     }
-  } else if (req.url.includes('/todos/status') && req.method === 'PATCH') {
-    try {
-      const url = req.url.split('/')
-      await changeToDoStatus(url)
+  } else if (req.url === '/todos/assignTo') {
+    if (req.method === 'GET') {
+      if ((await verify(req.rawHeaders)) === true) {
+        res.writeHead(200, { 'Content-Type': 'text/html' })
+        res.write(await getAssigns(req, res))
+      } else {
+        res.writeHead(401)
+        res.write('401 unauthorized')
+      }
+    } else if (req.method === 'POST') {
+      if ((await verify(req.rawHeaders)) === true) {
+        try {
+          req.on('data', function (data) {
+            postAssign(data)
+          })
+          res.writeHead(201, { 'Content-Type': 'text/html' })
+          res.write('assigned successfully')
+        } catch (error) {
+          res.write('400')
+          console.log(error)
+        }
+      } else {
+        res.writeHead(401)
+        res.write('401 unauthorized')
+      }
+    }
+  } else if (req.url.includes('/todos')) {
+    if (req.method === 'PUT') {
+      if ((await verify(req.rawHeaders)) === true) {
+        try {
+          const url = req.url.split('/')
 
-      res.writeHead(200, { 'Content-Type': 'text/html' })
+          req.on('data', (data) => {
+            updateToDo(data, url)
+          })
+          res.writeHead(200, { 'Content-Type': 'text/html' })
 
-      res.write('status updated successfully')
-      res.end()
-    } catch (error) {
-      res.write('400')
-      console.log(error)
-      res.end()
+          res.write('updated successfully')
+        } catch (error) {
+          res.write('400')
+          console.log(error)
+        }
+      } else {
+        res.writeHead(401)
+        res.write('401 unauthorized')
+      }
+    } else if (req.method === 'DELETE') {
+      if ((await verify(req.rawHeaders)) === true) {
+        try {
+          const url = req.url.split('/')
+          await deleteToDo(url)
+
+          res.writeHead(200, { 'Content-Type': 'text/html' })
+          res.write('deleted successfully')
+        } catch (error) {
+          res.write('400')
+          console.log(error)
+          res.end()
+        }
+      } else {
+        res.writeHead(401)
+        res.write('401 unauthorized')
+      }
+    } else if (req.url.includes('/todos/status') && req.method === 'PATCH') {
+      if ((await verify(req.rawHeaders)) === true) {
+        try {
+          const url = req.url.split('/')
+          await changeToDoStatus(url)
+
+          res.writeHead(200, { 'Content-Type': 'text/html' })
+
+          res.write('status updated successfully')
+        } catch (error) {
+          res.write('400')
+          console.log(error)
+          res.end()
+        }
+      } else {
+        res.writeHead(401)
+        res.write('401 unauthorized')
+      }
+    } else {
+      res.write('404')
     }
   } else {
     res.write('404')
