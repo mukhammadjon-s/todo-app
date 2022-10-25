@@ -13,7 +13,7 @@ async function loginUser (body) {
   )
   if (foundUser !== undefined) {
     return JSON.stringify({
-      token: jwt.sign(foundUser, process.env.TOKEN_KEY, {
+      token: jwt.sign({ user_id: foundUser.user_id }, process.env.TOKEN_KEY, {
         expiresIn: '24h'
       })
     })
@@ -31,13 +31,7 @@ async function verify (headers) {
       header = headers[1]
     }
     const body = jwt.verify(header, process.env.TOKEN_KEY)
-    let data = await readFile('./DB/users.json')
-    data = JSON.parse(data.toString())
-    const foundUser = data.find(
-      (dt) => dt.user_name === body.user_name && dt.user_pass === body.user_pass
-    )
-
-    if (foundUser !== undefined) {
+    if (body !== undefined) {
       return true
     } else {
       return false

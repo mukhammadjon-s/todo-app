@@ -40,11 +40,12 @@ describe('Test UPDATE /todos/:id', () => {
 describe('Test DELETE /todos/:id', () => {
   test('it should respond with 200 deleted', async () => {
     response = await request(app)
-      .delete('/todos/5')
+      .delete('/todos/1')
       .set('token', process.env.rawToken)
       .expect(200)
   })
 })
+
 describe('Test PATCH Status /todos/status/:id/:status', () => {
   test('it should respond with 200 patched status', async () => {
     response = await request(app)

@@ -27,7 +27,7 @@ const app = http.createServer(async (req, res) => {
       res.write(await loginUser(body))
     } catch (error) {
       res.writeHead(401)
-      res.write('401 unauthorized')
+      res.write(`${error.message}`)
       console.log(error)
     }
   } else if (req.url === '/todos') {
@@ -49,7 +49,7 @@ const app = http.createServer(async (req, res) => {
 
           res.write('posted successfully')
         } catch (error) {
-          res.write('400')
+          res.write(`${error.message}`)
           console.log(error)
         }
       } else {
@@ -75,7 +75,7 @@ const app = http.createServer(async (req, res) => {
           res.writeHead(201, { 'Content-Type': 'text/html' })
           res.write('assigned successfully')
         } catch (error) {
-          res.write('400')
+          res.write(`${error.message}`)
           console.log(error)
         }
       } else {
@@ -96,7 +96,7 @@ const app = http.createServer(async (req, res) => {
 
           res.write('updated successfully')
         } catch (error) {
-          res.write('400')
+          res.write(`${error.message}`)
           console.log(error)
         }
       } else {
@@ -112,7 +112,7 @@ const app = http.createServer(async (req, res) => {
           res.writeHead(200, { 'Content-Type': 'text/html' })
           res.write('deleted successfully')
         } catch (error) {
-          res.write('400')
+          res.write(`${error.message}`)
           console.log(error)
           res.end()
         }
@@ -130,7 +130,7 @@ const app = http.createServer(async (req, res) => {
 
           res.write('status updated successfully')
         } catch (error) {
-          res.write('400')
+          res.write(`${error.message}`)
           console.log(error)
           res.end()
         }
