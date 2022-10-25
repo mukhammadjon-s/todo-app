@@ -35,10 +35,18 @@ async function changeToDoStatus (url) {
   await writeFile('./DB/todos.json', JSON.stringify(data))
 }
 
+async function assignTo (body) {
+  let data = await readFile('./DB/todos.json')
+  data = JSON.parse(data.toString())
+  data.find((d) => JSON.parse(body).task_id == d.id).assignee = JSON.parse(body).user_id
+  await writeFile('./DB/todos.json', JSON.stringify(data))
+}
+
 module.exports = {
   getToDos,
   postToDo,
   updateToDo,
   deleteToDo,
-  changeToDoStatus
+  changeToDoStatus,
+  assignTo
 }
