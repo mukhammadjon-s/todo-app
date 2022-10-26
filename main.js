@@ -36,7 +36,7 @@ const app = http.createServer(async (req, res) => {
         res.write(await getToDos())
       } else {
         res.writeHead(401)
-        res.write('401 unauthorized')
+        res.write(JSON.stringify({ 401: 'unauthorized' }))
       }
     } else if (req.method === 'POST') {
       if ((await verify(req.rawHeaders)) === true) {
@@ -48,12 +48,12 @@ const app = http.createServer(async (req, res) => {
 
           res.write(JSON.stringify({ 201: 'posted successfully' }))
         } catch (error) {
-          res.write(`${error.message}`)
+          res.write(JSON.stringify({ message: error.message }))
           console.log(error)
         }
       } else {
         res.writeHead(401)
-        res.write('401 unauthorized')
+        res.write(JSON.stringify({ 401: 'unauthorized' }))
       }
     }
   } else if (req.url === '/todos/assignTo') {
@@ -66,12 +66,12 @@ const app = http.createServer(async (req, res) => {
           res.writeHead(200, { 'Content-Type': 'application/json' })
           res.write(JSON.stringify({ 200: 'assigned successfully' }))
         } catch (error) {
-          res.write(`${error.message}`)
+          res.write(JSON.stringify({ message: error.message }))
           console.log(error)
         }
       } else {
         res.writeHead(401)
-        res.write('401 unauthorized')
+        res.write(JSON.stringify({ 401: 'unauthorized' }))
       }
     }
   } else if (req.url.includes('/todos')) {
@@ -84,12 +84,12 @@ const app = http.createServer(async (req, res) => {
           res.writeHead(200, { 'Content-Type': 'application/json' })
           res.write(JSON.stringify({ 200: 'assigned successfully' }))
         } catch (error) {
-          res.write(`${error.message}`)
+          res.write(JSON.stringify({ message: error.message }))
           console.log(error)
         }
       } else {
         res.writeHead(401)
-        res.write('401 unauthorized')
+        res.write(JSON.stringify({ 401: 'unauthorized' }))
       }
     }
     if (req.method === 'PUT') {
@@ -103,12 +103,12 @@ const app = http.createServer(async (req, res) => {
           res.writeHead(200, { 'Content-Type': 'application/json' })
           res.write(JSON.stringify({ 200: 'updated successfully' }))
         } catch (error) {
-          res.write(`${error.message}`)
+          res.write(JSON.stringify({ message: error.message }))
           console.log(error)
         }
       } else {
         res.writeHead(401)
-        res.write('401 unauthorized')
+        res.write(JSON.stringify({ 401: 'unauthorized' }))
       }
     } else if (req.method === 'DELETE') {
       if ((await verify(req.rawHeaders)) === true) {
@@ -119,13 +119,13 @@ const app = http.createServer(async (req, res) => {
           res.writeHead(200, { 'Content-Type': 'application/json' })
           res.write(JSON.stringify({ 200: 'deleted successfully' }))
         } catch (error) {
-          res.write(`${error.message}`)
+          res.write(JSON.stringify({ message: error.message }))
           console.log(error)
           res.end()
         }
       } else {
         res.writeHead(401)
-        res.write('401 unauthorized')
+        res.write(JSON.stringify({ 401: 'unauthorized' }))
       }
     } else if (req.url.includes('/todos/status') && req.method === 'PATCH') {
       if ((await verify(req.rawHeaders)) === true) {
@@ -136,19 +136,19 @@ const app = http.createServer(async (req, res) => {
           res.writeHead(200, { 'Content-Type': 'application/json' })
           res.write(JSON.stringify({ 200: 'status updated successfully' }))
         } catch (error) {
-          res.write(`${error.message}`)
+          res.write(JSON.stringify({ message: error.message }))
           console.log(error)
           res.end()
         }
       } else {
         res.writeHead(401)
-        res.write('401 unauthorized')
+        res.write(JSON.stringify({ 401: 'unauthorized' }))
       }
     } else {
-      res.write('404')
+      res.write(JSON.stringify({ 404: 'not found' }))
     }
   } else {
-    res.write('404')
+    res.write(JSON.stringify({ 404: 'not found' }))
   }
   res.end()
 }, console.log('server started'))
