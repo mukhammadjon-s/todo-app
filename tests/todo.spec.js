@@ -2,6 +2,18 @@
 const request = require('supertest')
 const app = require('../main.js')
 
+describe('Test Auth POST /login', () => {
+  test('it should respond with 200 success', async () => {
+    response = await request(app)
+      .post('/login')
+      .send({
+        user_name: 'maryam',
+        user_pass: '12345'
+      })
+      .expect(200)
+  })
+})
+
 describe('Test GET /todos', () => {
   test('it should respond with 200 success', async () => {
     response = await request(app)
