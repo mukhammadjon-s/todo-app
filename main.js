@@ -13,7 +13,7 @@ const { loginUser, verify } = require('./Repositories/auth.js')
 
 const app = http.createServer(async (req, res) => {
   if (req.url === '/') {
-    res.writeHead(200, { 'Content-Type': 'text/html' })
+    res.writeHead(200, { 'Content-Type': 'application/json' })
     res.write('home')
   } else if (req.url === '/login' && req.method === 'POST') {
     try {
@@ -22,7 +22,7 @@ const app = http.createServer(async (req, res) => {
         body += data
       })
       console.log(await body)
-      res.writeHead(200, { 'Content-Type': 'text/html' })
+      res.writeHead(200, { 'Content-Type': 'application/json' })
       res.write(await loginUser(body))
     } catch (error) {
       res.writeHead(401)
@@ -32,7 +32,7 @@ const app = http.createServer(async (req, res) => {
   } else if (req.url === '/todos') {
     if (req.method === 'GET') {
       if ((await verify(req.rawHeaders)) === true) {
-        res.writeHead(200, { 'Content-Type': 'text/html' })
+        res.writeHead(200, { 'Content-Type': 'application/json' })
         res.write(await getToDos())
       } else {
         res.writeHead(401)
@@ -44,9 +44,9 @@ const app = http.createServer(async (req, res) => {
           req.on('data', (data) => {
             postToDo(data)
           })
-          res.writeHead(201, { 'Content-Type': 'text/html' })
+          res.writeHead(201, { 'Content-Type': 'application/json' })
 
-          res.write('posted successfully')
+          res.write(JSON.stringify({ 201: 'posted successfully' }))
         } catch (error) {
           res.write(`${error.message}`)
           console.log(error)
@@ -63,8 +63,8 @@ const app = http.createServer(async (req, res) => {
           req.on('data', function (data) {
             assignTo(data)
           })
-          res.writeHead(200, { 'Content-Type': 'text/html' })
-          res.write('assigned successfully')
+          res.writeHead(200, { 'Content-Type': 'application/json' })
+          res.write(JSON.stringify({ 200: 'assigned successfully' }))
         } catch (error) {
           res.write(`${error.message}`)
           console.log(error)
@@ -81,8 +81,8 @@ const app = http.createServer(async (req, res) => {
           req.on('data', function (data) {
             assignTo(data)
           })
-          res.writeHead(200, { 'Content-Type': 'text/html' })
-          res.write('assigned successfully')
+          res.writeHead(200, { 'Content-Type': 'application/json' })
+          res.write(JSON.stringify({ 200: 'assigned successfully' }))
         } catch (error) {
           res.write(`${error.message}`)
           console.log(error)
@@ -100,9 +100,8 @@ const app = http.createServer(async (req, res) => {
           req.on('data', (data) => {
             updateToDo(data, url)
           })
-          res.writeHead(200, { 'Content-Type': 'text/html' })
-
-          res.write('updated successfully')
+          res.writeHead(200, { 'Content-Type': 'application/json' })
+          res.write(JSON.stringify({ 200: 'updated successfully' }))
         } catch (error) {
           res.write(`${error.message}`)
           console.log(error)
@@ -117,8 +116,8 @@ const app = http.createServer(async (req, res) => {
           const url = req.url.split('/')
           await deleteToDo(url)
 
-          res.writeHead(200, { 'Content-Type': 'text/html' })
-          res.write('deleted successfully')
+          res.writeHead(200, { 'Content-Type': 'application/json' })
+          res.write(JSON.stringify({ 200: 'deleted successfully' }))
         } catch (error) {
           res.write(`${error.message}`)
           console.log(error)
@@ -134,9 +133,8 @@ const app = http.createServer(async (req, res) => {
           const url = req.url.split('/')
           await changeToDoStatus(url)
 
-          res.writeHead(200, { 'Content-Type': 'text/html' })
-
-          res.write('status updated successfully')
+          res.writeHead(200, { 'Content-Type': 'application/json' })
+          res.write(JSON.stringify({ 200: 'status updated successfully' }))
         } catch (error) {
           res.write(`${error.message}`)
           console.log(error)

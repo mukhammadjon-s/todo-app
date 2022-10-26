@@ -16,7 +16,9 @@ async function postToDo (body) {
 
 async function updateToDo (body, url) {
   let data = await readFile('./DB/todos.json')
+  console.log(data.toString())
   data = JSON.parse(data.toString())
+
   data.find((d) => url[2] == d.id).text = JSON.parse(body).text
   await writeFile('./DB/todos.json', JSON.stringify(data))
 }
