@@ -8,6 +8,7 @@
   },
   "scripts": {
     "start": "node main.js",
+    "dev": "nodemon main.js",
     "test": "jest",
     "lint:fix": "eslint --fix ./*.js",
     "precommit": "npm run lint:fix && npm test",
@@ -33,6 +34,11 @@
     "eslint-plugin-promise": "^6.1.1",
     "husky": "^8.0.0",
     "jest": "^29.2.1",
+    "nodemon": "^2.0.20",
     "supertest": "^6.3.0"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "jsonwebtoken": "^8.5.1"
   }
 }

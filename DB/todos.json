@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "text": "first",
+    "assignee": 2,
+    "status": "TODO",
+    "deleted": true
+  },
+  {
+    "id": 2,
+    "text": "text2",
+    "assignee": 3,
+    "status": "DONE",
+    "deleted": false
+  },
+  {
+    "id": 3,
+    "text": "text33",
+    "assignee": 1,
+    "status": "DOING",
+    "deleted": false
+  },
+  {
+    "id": 4,
+    "text": "text4",
+    "assignee": 4,
+    "status": "TODO",
+    "deleted": true
+  },
+  {
+    "id": 5,
+    "text": "text5",
+    "assignee": 5,
+    "status": "DOING",
+    "deleted": true
+  },
+  {
+    "id": 8,
+    "text": "text8",
+    "status": "DOING"
+  }
+]
