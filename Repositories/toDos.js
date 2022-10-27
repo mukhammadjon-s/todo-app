@@ -15,6 +15,9 @@ async function getToDos () {
 async function postToDo (body) {
   try {
     let data = await readFile('./DB/todos.json')
+    if (!(JSON.parse(body).text && JSON.parse(body).status)) {
+      throw new Error('insufficient amount of fields provided')
+    }
     data = JSON.parse(data.toString())
     data.push(JSON.parse(body))
     await writeFile('./DB/todos.json', JSON.stringify(data, undefined, 2))
@@ -27,7 +30,11 @@ async function updateToDo (body, url) {
   try {
     let data = await readFile('./DB/todos.json')
     data = JSON.parse(data.toString())
-    data.find((d) => url[2] == d.id).text = JSON.parse(body).text
+    const found = data.find((d) => url[2] == d.id)
+    if (!found) {
+      throw Error('invalid todo id')
+    }
+    found.text = JSON.parse(body).text
     await writeFile('./DB/todos.json', JSON.stringify(data, undefined, 2))
   } catch (error) {
     throw new BaseError(error.message, '404', true, error.message)
@@ -38,8 +45,13 @@ async function deleteToDo (url) {
   try {
     let data = await readFile('./DB/todos.json')
     data = JSON.parse(data.toString())
-    data.find((d) => url[2] == d.id).deleted = true
+    const found = data.find((d) => url[2] == d.id)
+    if (!found) {
+      throw Error('invalid todo id')
+    }
+    found.deleted = true
     await writeFile('./DB/todos.json', JSON.stringify(data, undefined, 2))
+    console.log(data)
   } catch (error) {
     throw new BaseError(error.message, '404', true, error.message)
   }
@@ -49,7 +61,11 @@ async function changeToDoStatus (url) {
   try {
     let data = await readFile('./DB/todos.json')
     data = JSON.parse(data.toString())
-    data.find((d) => url[3] == d.id).status = url[4]
+    const found = data.find((d) => url[3] == d.id)
+    if (!found) {
+      throw Error('invalid todo id')
+    }
+    found.status = url[4]
     await writeFile('./DB/todos.json', JSON.stringify(data, undefined, 2))
   } catch (error) {
     throw new BaseError(error.message, '404', true, error.message)
@@ -60,8 +76,11 @@ async function assignTo (body) {
   try {
     let data = await readFile('./DB/todos.json')
     data = JSON.parse(data.toString())
-    data.find((d) => JSON.parse(body).task_id == d.id).assignee =
-      JSON.parse(body).user_id
+    const found = data.find((d) => JSON.parse(body).task_id == d.id)
+    if (!found) {
+      throw Error('invalid task id')
+    }
+    found.assignee = JSON.parse(body).user_id
     await writeFile('./DB/todos.json', JSON.stringify(data, undefined, 2))
   } catch (error) {
     throw new BaseError(error.message, '404', true, error.message)

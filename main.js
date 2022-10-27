@@ -45,12 +45,16 @@ const app = http.createServer(async (req, res) => {
     } else if (req.method === 'POST') {
       try {
         await verify(req.rawHeaders)
-        req.on('data', (data) => {
-          postToDo(data)
+
+        const body = []
+        req.on('data', (chunk) => {
+          body.push(chunk)
         })
+        await postToDo(body)
         res.writeHead(201, { 'Content-Type': 'application/json' })
         res.write(JSON.stringify({ 201: 'posted successfully' }))
       } catch (error) {
+        console.log(error)
         res.writeHead(error.statusCode, { 'Content-Type': 'application/json' })
         res.write(JSON.stringify(error))
         console.log(error)
@@ -60,9 +64,11 @@ const app = http.createServer(async (req, res) => {
     if (req.method === 'PUT') {
       try {
         await verify(req.rawHeaders)
-        req.on('data', function (data) {
-          assignTo(data)
+        const body = []
+        req.on('data', (chunk) => {
+          body.push(chunk)
         })
+        await assignTo(body)
         res.writeHead(200, { 'Content-Type': 'application/json' })
         res.write(JSON.stringify({ 200: 'assigned successfully' }))
       } catch (error) {
@@ -72,28 +78,16 @@ const app = http.createServer(async (req, res) => {
       }
     }
   } else if (req.url.includes('/todos')) {
-    if (req.url === '/todos/assignTo' && req.method === 'PUT') {
-      try {
-        await verify(req.rawHeaders)
-        req.on('data', function (data) {
-          assignTo(data)
-        })
-        res.writeHead(200, { 'Content-Type': 'application/json' })
-        res.write(JSON.stringify({ 200: 'assigned successfully' }))
-      } catch (error) {
-        res.writeHead(error.statusCode, { 'Content-Type': 'application/json' })
-        res.write(JSON.stringify(error))
-        console.log(error)
-      }
-    }
     if (req.method === 'PUT') {
       try {
         await verify(req.rawHeaders)
         const url = req.url.split('/')
 
-        req.on('data', (data) => {
-          updateToDo(data, url)
+        const body = []
+        req.on('data', (chunk) => {
+          body.push(chunk)
         })
+        await updateToDo(body, url)
         res.writeHead(200, { 'Content-Type': 'application/json' })
         res.write(JSON.stringify({ 200: 'updated successfully' }))
       } catch (error) {
