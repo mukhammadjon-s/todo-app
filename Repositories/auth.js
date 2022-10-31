@@ -1,6 +1,7 @@
 const { readFile } = require('fs/promises')
 require('dotenv').config()
 const jwt = require('jsonwebtoken')
+const BaseError = require('./errorHandling')
 
 async function loginUser (body) {
   let data = await readFile('./DB/users.json')
@@ -18,7 +19,12 @@ async function loginUser (body) {
       })
     })
   } else {
-    return '401 unauthorized'
+    throw new BaseError(
+      'unauthorized',
+      '401',
+      false,
+      'invalid username or password'
+    )
   }
 }
 
@@ -37,8 +43,12 @@ async function verify (headers) {
       return false
     }
   } catch (err) {
-    console.log(err)
-    return '404'
+    throw new BaseError(
+      'invalid token',
+      '401',
+      false,
+      'unauthorized'
+    )
   }
 }
 module.exports = { loginUser, verify }

@@ -9,6 +9,8 @@ const {
   assignTo
 } = require('./Repositories/toDos.js')
 
+const BaseError = require('./Repositories/errorHandling.js')
+
 const { loginUser, verify } = require('./Repositories/auth.js')
 
 const app = http.createServer(async (req, res) => {
@@ -25,130 +27,113 @@ const app = http.createServer(async (req, res) => {
       res.writeHead(200, { 'Content-Type': 'application/json' })
       res.write(await loginUser(body))
     } catch (error) {
-      res.writeHead(401)
-      res.write(`${error.message}`)
+      res.writeHead(401, { 'Content-Type': 'application/json' })
+      res.write(JSON.stringify(error))
       console.log(error)
     }
   } else if (req.url === '/todos') {
     if (req.method === 'GET') {
-      if ((await verify(req.rawHeaders)) === true) {
+      try {
+        await verify(req.rawHeaders)
         res.writeHead(200, { 'Content-Type': 'application/json' })
         res.write(await getToDos())
-      } else {
-        res.writeHead(401)
-        res.write(JSON.stringify({ 401: 'unauthorized' }))
+      } catch (error) {
+        res.writeHead(error.statusCode, { 'Content-Type': 'application/json' })
+        res.write(JSON.stringify(error))
+        console.log(error)
       }
     } else if (req.method === 'POST') {
-      if ((await verify(req.rawHeaders)) === true) {
-        try {
-          req.on('data', (data) => {
-            postToDo(data)
-          })
-          res.writeHead(201, { 'Content-Type': 'application/json' })
+      try {
+        await verify(req.rawHeaders)
 
-          res.write(JSON.stringify({ 201: 'posted successfully' }))
-        } catch (error) {
-          res.write(JSON.stringify({ message: error.message }))
-          console.log(error)
-        }
-      } else {
-        res.writeHead(401)
-        res.write(JSON.stringify({ 401: 'unauthorized' }))
+        const body = []
+        req.on('data', (chunk) => {
+          body.push(chunk)
+        })
+        await postToDo(body)
+        res.writeHead(201, { 'Content-Type': 'application/json' })
+        res.write(JSON.stringify({ 201: 'posted successfully' }))
+      } catch (error) {
+        console.log(error)
+        res.writeHead(error.statusCode, { 'Content-Type': 'application/json' })
+        res.write(JSON.stringify(error))
+        console.log(error)
       }
     }
   } else if (req.url === '/todos/assignTo') {
     if (req.method === 'PUT') {
-      if ((await verify(req.rawHeaders)) === true) {
-        try {
-          req.on('data', function (data) {
-            assignTo(data)
-          })
-          res.writeHead(200, { 'Content-Type': 'application/json' })
-          res.write(JSON.stringify({ 200: 'assigned successfully' }))
-        } catch (error) {
-          res.write(JSON.stringify({ message: error.message }))
-          console.log(error)
-        }
-      } else {
-        res.writeHead(401)
-        res.write(JSON.stringify({ 401: 'unauthorized' }))
+      try {
+        await verify(req.rawHeaders)
+        const body = []
+        req.on('data', (chunk) => {
+          body.push(chunk)
+        })
+        await assignTo(body)
+        res.writeHead(200, { 'Content-Type': 'application/json' })
+        res.write(JSON.stringify({ 200: 'assigned successfully' }))
+      } catch (error) {
+        res.writeHead(error.statusCode, { 'Content-Type': 'application/json' })
+        res.write(JSON.stringify(error))
+        console.log(error)
       }
     }
   } else if (req.url.includes('/todos')) {
-    if (req.url === '/todos/assignTo' && req.method === 'PUT') {
-      if ((await verify(req.rawHeaders)) === true) {
-        try {
-          req.on('data', function (data) {
-            assignTo(data)
-          })
-          res.writeHead(200, { 'Content-Type': 'application/json' })
-          res.write(JSON.stringify({ 200: 'assigned successfully' }))
-        } catch (error) {
-          res.write(JSON.stringify({ message: error.message }))
-          console.log(error)
-        }
-      } else {
-        res.writeHead(401)
-        res.write(JSON.stringify({ 401: 'unauthorized' }))
-      }
-    }
     if (req.method === 'PUT') {
-      if ((await verify(req.rawHeaders)) === true) {
-        try {
-          const url = req.url.split('/')
+      try {
+        await verify(req.rawHeaders)
+        const url = req.url.split('/')
 
-          req.on('data', (data) => {
-            updateToDo(data, url)
-          })
-          res.writeHead(200, { 'Content-Type': 'application/json' })
-          res.write(JSON.stringify({ 200: 'updated successfully' }))
-        } catch (error) {
-          res.write(JSON.stringify({ message: error.message }))
-          console.log(error)
-        }
-      } else {
-        res.writeHead(401)
-        res.write(JSON.stringify({ 401: 'unauthorized' }))
+        const body = []
+        req.on('data', (chunk) => {
+          body.push(chunk)
+        })
+        await updateToDo(body, url)
+        res.writeHead(200, { 'Content-Type': 'application/json' })
+        res.write(JSON.stringify({ 200: 'updated successfully' }))
+      } catch (error) {
+        res.writeHead(error.statusCode, { 'Content-Type': 'application/json' })
+        res.write(JSON.stringify(error))
+        console.log(error)
       }
     } else if (req.method === 'DELETE') {
-      if ((await verify(req.rawHeaders)) === true) {
-        try {
-          const url = req.url.split('/')
-          await deleteToDo(url)
+      try {
+        await verify(req.rawHeaders)
+        const url = req.url.split('/')
+        await deleteToDo(url)
 
-          res.writeHead(200, { 'Content-Type': 'application/json' })
-          res.write(JSON.stringify({ 200: 'deleted successfully' }))
-        } catch (error) {
-          res.write(JSON.stringify({ message: error.message }))
-          console.log(error)
-          res.end()
-        }
-      } else {
-        res.writeHead(401)
-        res.write(JSON.stringify({ 401: 'unauthorized' }))
+        res.writeHead(200, { 'Content-Type': 'application/json' })
+        res.write(JSON.stringify({ 200: 'deleted successfully' }))
+      } catch (error) {
+        res.writeHead(error.statusCode, { 'Content-Type': 'application/json' })
+        res.write(JSON.stringify(error))
+        console.log(error)
       }
     } else if (req.url.includes('/todos/status') && req.method === 'PATCH') {
-      if ((await verify(req.rawHeaders)) === true) {
-        try {
-          const url = req.url.split('/')
-          await changeToDoStatus(url)
+      try {
+        await verify(req.rawHeaders)
+        const url = req.url.split('/')
+        await changeToDoStatus(url)
 
-          res.writeHead(200, { 'Content-Type': 'application/json' })
-          res.write(JSON.stringify({ 200: 'status updated successfully' }))
-        } catch (error) {
-          res.write(JSON.stringify({ message: error.message }))
-          console.log(error)
-          res.end()
-        }
-      } else {
-        res.writeHead(401)
-        res.write(JSON.stringify({ 401: 'unauthorized' }))
+        res.writeHead(200, { 'Content-Type': 'application/json' })
+        res.write(JSON.stringify({ 200: 'status updated successfully' }))
+      } catch (error) {
+        res.writeHead(error.statusCode, { 'Content-Type': 'application/json' })
+        res.write(JSON.stringify(error))
+        console.log(error)
       }
     } else {
-      res.write(JSON.stringify({ 404: 'not found' }))
+      res.writeHead(404, { 'Content-Type': 'application/json' })
+      res.write(
+        JSON.stringify(
+          new BaseError('not found', '404', false, 'page not found')
+        )
+      )
     }
   } else {
-    res.write(JSON.stringify({ 404: 'not found' }))
+    res.writeHead(404, { 'Content-Type': 'application/json' })
+    res.write(
+      JSON.stringify(new BaseError('not found', '404', false, 'page not found'))
+    )
   }
   res.end()
 }, console.log('server started'))
