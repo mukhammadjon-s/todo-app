@@ -45,7 +45,7 @@ describe('Test GET /todos?status=', () => {
     response = await request(app)
       .get('/todos?status=DONE')
       .set({ token: process.env.rawToken })
-      .expect(200)
+    expect(JSON.parse(response.text).length).toEqual(1)
   })
 })
 

@@ -5,18 +5,27 @@ const BaseError = require('./errorHandling')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
-async function getToDos (headers) {
+async function getToDos (headers, status) {
   try {
-    let header = ''
-    if (process.env.NODE_ENV === 'test') {
-      header = headers[5]
-    } else {
-      header = headers[1]
-    }
-    const { user_id } = jwt.verify(header, process.env.TOKEN_KEY)
     let data = await readFile('./DB/todos.json')
-    data = JSON.parse(data.toString()).filter((dt) => dt.deleted !== true && dt.assignee == user_id)
-    return JSON.stringify(data)
+    if (headers != undefined) {
+      let header = ''
+      if (process.env.NODE_ENV === 'test') {
+        header = headers[5]
+      } else {
+        header = headers[1]
+      }
+      const { user_id } = jwt.verify(header, process.env.TOKEN_KEY)
+      data = JSON.parse(data.toString()).filter(
+        (dt) => dt.deleted !== true && dt.assignee == user_id
+      )
+      return JSON.stringify(data)
+    } else if (status) {
+      data = JSON.parse(data.toString()).filter(
+        (dt) => dt.deleted !== true && dt.status == status
+      )
+      return JSON.stringify(data)
+    }
   } catch (error) {
     throw new BaseError(error.message, '404', true, error.message)
   }
@@ -97,24 +106,11 @@ async function assignTo (body) {
   }
 }
 
-async function getToDosByStatus (status) {
-  try {
-    let data = await readFile('./DB/todos.json')
-    data = JSON.parse(data.toString()).filter(
-      (dt) => dt.deleted !== true && dt.status == status
-    )
-    return JSON.stringify(data)
-  } catch (error) {
-    throw new BaseError(error.message, '404', true, error.message)
-  }
-}
-
 module.exports = {
   getToDos,
   postToDo,
   updateToDo,
   deleteToDo,
   changeToDoStatus,
-  assignTo,
-  getToDosByStatus
+  assignTo
 }
