@@ -70,7 +70,6 @@ async function deleteToDo (url) {
     }
     found.deleted = true
     await writeFile('./DB/todos.json', JSON.stringify(data, undefined, 2))
-    console.log(data)
   } catch (error) {
     throw new BaseError(error.message, '404', true, error.message)
   }
