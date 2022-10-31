@@ -6,7 +6,8 @@ const {
   updateToDo,
   deleteToDo,
   changeToDoStatus,
-  assignTo
+  assignTo,
+  getToDosByStatus
 } = require('./Repositories/toDos.js')
 
 const BaseError = require('./Repositories/errorHandling.js')
@@ -23,7 +24,7 @@ const app = http.createServer(async (req, res) => {
       req.on('data', function (data) {
         body += data
       })
-      console.log(await body)
+      await body
       res.writeHead(200, { 'Content-Type': 'application/json' })
       res.write(await loginUser(body))
     } catch (error) {
@@ -36,7 +37,7 @@ const app = http.createServer(async (req, res) => {
       try {
         await verify(req.rawHeaders)
         res.writeHead(200, { 'Content-Type': 'application/json' })
-        res.write(await getToDos())
+        res.write(await getToDos(req.rawHeaders))
       } catch (error) {
         res.writeHead(error.statusCode, { 'Content-Type': 'application/json' })
         res.write(JSON.stringify(error))
@@ -70,6 +71,17 @@ const app = http.createServer(async (req, res) => {
         res.write(JSON.stringify(error))
         console.log(error)
       }
+    }
+  } else if (req.url.includes('/todos?status=')) {
+    try {
+      await verify(req.rawHeaders)
+
+      res.writeHead(200, { 'Content-Type': 'application/json' })
+      res.write(await getToDosByStatus(req.url.split('=')[1]))
+    } catch (error) {
+      res.writeHead(error.statusCode, { 'Content-Type': 'application/json' })
+      res.write(JSON.stringify(error))
+      console.log(error)
     }
   } else if (req.url.includes('/todos')) {
     if (req.url === '/todos/assignTo' && req.method === 'PUT') {
