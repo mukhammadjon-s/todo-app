@@ -31,12 +31,11 @@ describe('Test GET /todos', () => {
       .set({ token: process.env.rawToken })
       .expect(200)
   })
-
-  test('it should respond with 401 invalid token', async () => {
+  test('it should respond with 200 success', async () => {
     response = await request(app)
-      .get('/todos')
-      .set({ token: process.env.rawTokenWrong })
-      .expect(401)
+      .get('/todos?status=DONE')
+      .set({ token: process.env.rawToken })
+    expect(JSON.parse(response.text).length).toEqual(1)
   })
 })
 
