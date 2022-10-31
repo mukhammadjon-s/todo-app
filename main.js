@@ -6,8 +6,7 @@ const {
   updateToDo,
   deleteToDo,
   changeToDoStatus,
-  assignTo,
-  getToDosByStatus
+  assignTo
 } = require('./Repositories/toDos.js')
 
 const BaseError = require('./Repositories/errorHandling.js')
@@ -30,7 +29,6 @@ const app = http.createServer(async (req, res) => {
     } catch (error) {
       res.writeHead(401, { 'Content-Type': 'application/json' })
       res.write(JSON.stringify(error))
-      console.log(error)
     }
   } else if (req.url === '/todos') {
     if (req.method === 'GET') {
@@ -41,7 +39,6 @@ const app = http.createServer(async (req, res) => {
       } catch (error) {
         res.writeHead(error.statusCode, { 'Content-Type': 'application/json' })
         res.write(JSON.stringify(error))
-        console.log(error)
       }
     } else if (req.method === 'POST') {
       try {
@@ -54,7 +51,6 @@ const app = http.createServer(async (req, res) => {
       } catch (error) {
         res.writeHead(error.statusCode, { 'Content-Type': 'application/json' })
         res.write(JSON.stringify(error))
-        console.log(error)
       }
     }
   } else if (req.url === '/todos/assignTo') {
@@ -69,7 +65,6 @@ const app = http.createServer(async (req, res) => {
       } catch (error) {
         res.writeHead(error.statusCode, { 'Content-Type': 'application/json' })
         res.write(JSON.stringify(error))
-        console.log(error)
       }
     }
   } else if (req.url.includes('/todos?status=')) {
@@ -77,11 +72,10 @@ const app = http.createServer(async (req, res) => {
       await verify(req.rawHeaders)
 
       res.writeHead(200, { 'Content-Type': 'application/json' })
-      res.write(await getToDosByStatus(req.url.split('=')[1]))
+      res.write(await getToDos(undefined, req.url.split('=')[1]))
     } catch (error) {
       res.writeHead(error.statusCode, { 'Content-Type': 'application/json' })
       res.write(JSON.stringify(error))
-      console.log(error)
     }
   } else if (req.url.includes('/todos')) {
     if (req.url === '/todos/assignTo' && req.method === 'PUT') {
@@ -95,7 +89,6 @@ const app = http.createServer(async (req, res) => {
       } catch (error) {
         res.writeHead(error.statusCode, { 'Content-Type': 'application/json' })
         res.write(JSON.stringify(error))
-        console.log(error)
       }
     }
     if (req.method === 'PUT') {
@@ -111,7 +104,6 @@ const app = http.createServer(async (req, res) => {
       } catch (error) {
         res.writeHead(error.statusCode, { 'Content-Type': 'application/json' })
         res.write(JSON.stringify(error))
-        console.log(error)
       }
     } else if (req.method === 'DELETE') {
       try {
@@ -124,7 +116,6 @@ const app = http.createServer(async (req, res) => {
       } catch (error) {
         res.writeHead(error.statusCode, { 'Content-Type': 'application/json' })
         res.write(JSON.stringify(error))
-        console.log(error)
       }
     } else if (req.url.includes('/todos/status') && req.method === 'PATCH') {
       try {
@@ -137,7 +128,6 @@ const app = http.createServer(async (req, res) => {
       } catch (error) {
         res.writeHead(error.statusCode, { 'Content-Type': 'application/json' })
         res.write(JSON.stringify(error))
-        console.log(error)
       }
     } else {
       res.writeHead(404, { 'Content-Type': 'application/json' })
@@ -154,12 +144,10 @@ const app = http.createServer(async (req, res) => {
     )
   }
   res.end()
-}, console.log('server started'))
+}, 'server started')
 
 module.exports = app
 
 if (process.env.NODE_ENV !== 'test') {
-  app.listen(process.env.PORT, () =>
-    console.log(`Listening on port ${process.env.PORT}`)
-  )
+  app.listen(process.env.PORT)
 }

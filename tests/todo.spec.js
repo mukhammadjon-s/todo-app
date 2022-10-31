@@ -21,14 +21,11 @@ describe('Test GET /todos', () => {
       .set({ token: process.env.rawToken })
       .expect(200)
   })
-})
-
-describe('Test GET /todos?status=', () => {
   test('it should respond with 200 success', async () => {
     response = await request(app)
       .get('/todos?status=DONE')
       .set({ token: process.env.rawToken })
-      .expect(200)
+    expect(JSON.parse(response.text).length).toEqual(1)
   })
 })
 
@@ -58,14 +55,14 @@ describe('Test UPDATE /todos/:id', () => {
   })
 })
 
-describe('Test DELETE /todos/:id', () => {
-  test('it should respond with 200 deleted', async () => {
-    response = await request(app)
-      .delete('/todos/1')
-      .set('token', process.env.rawToken)
-      .expect(200)
-  })
-})
+// describe('Test DELETE /todos/:id', () => {
+//   test('it should respond with 200 deleted', async () => {
+//     response = await request(app)
+//       .delete('/todos/1')
+//       .set('token', process.env.rawToken)
+//       .expect(200)
+//   })
+// })
 
 describe('Test PATCH Status /todos/status/:id/:status', () => {
   test('it should respond with 200 patched status', async () => {
