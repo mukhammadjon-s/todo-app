@@ -40,6 +40,15 @@ describe('Test GET /todos', () => {
   })
 })
 
+describe('Test GET /todos?status=', () => {
+  test('it should respond with 200 success', async () => {
+    response = await request(app)
+      .get('/todos?status=DONE')
+      .set({ token: process.env.rawToken })
+      .expect(200)
+  })
+})
+
 describe('Test POST /todos', () => {
   test('it should respond with 201 created', async () => {
     response = await request(app)
